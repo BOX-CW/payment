@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pasarela de Pagos Chuwibox</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #eef3ff, #f8fbff);
+      padding: 20px;
+      color: #1f2937;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .gateway {
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 20px 45px rgba(31, 41, 55, 0.14);
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+    }
+
+    .header {
+      background: linear-gradient(135deg, #111827, #2563eb);
+      color: white;
+      padding: 24px 24px 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 23px;
+      letter-spacing: 0.4px;
+      margin-bottom: 7px;
+    }
+
+    .header p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .demo-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .summary {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
+      padding-top: 10px;
+      border-top: 1px dashed #cbd5e1;
+      font-size: 17px;
+      font-weight: bold;
+    }
+
+    .cards {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 7px 11px;
+      font-size: 13px;
+      font-weight: bold;
+      background: #fff;
+    }
+
+    .visa {
+      color: #1a1f71;
+    }
+
+    .mastercard {
+      color: #111827;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 7px;
+      color: #374151;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 13px;
+      padding: 14px 14px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s ease;
+      background: #fff;
+    }
+
+    input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .pay-btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(135deg, #111827, #2563eb);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      margin-top: 6px;
+    }
+
+    .pay-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+    }
+
+    .pay-btn:active {
+      transform: translateY(0);
+    }
+
+    .note {
+      margin-top: 15px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .success {
+      display: none;
+      text-align: center;
+      padding: 30px 22px 26px;
+    }
+
+    .check {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: #16a34a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      margin: 0 auto 18px;
+      font-weight: bold;
+    }
+
+    .success h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+      color: #111827;
+    }
+
+    .success p {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #374151;
+    }
+
+    .success strong {
+      color: #111827;
+    }
+
+    .back-btn {
+      margin-top: 20px;
+      background: #f3f4f6;
+      color: #111827;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .error {
+      display: none;
+      margin-top: 12px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #b91c1c;
+      border-radius: 12px;
+      padding: 11px 12px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 420px) {
+      .row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="gateway">
+      <div id="paymentView">
+        <div class="header">
+          <h1>PASARELA DE PAGOS CHUWIBOX</h1>
+          <p>Pago con tarjeta de débito</p>
+          <span class="demo-badge">KDENLIVE EDITOR ALIVIANADO - VERSION ESPAÑOL</span>
+        </div>
+
+        <div class="content">
+          <div class="summary">
+            <div class="summary-row">
+              <span>Producto</span>
+              <span>Chuwibox</span>
+            </div>
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span>$21,99</span>
+            </div>
+            <div class="summary-row">
+              <span>Impuestos</span>
+              <span>Aplicables según su país</span>
+            </div>
+            <div class="summary-row">
+              <span>Total a debitar</span>
+              <span>$21,99 + impuestos</span>
+            </div>
+          </div>
+
+          <div class="cards">
+            <span class="brand visa">VISA</span>
+            <span class="brand mastercard">●● Mastercard</span>
+          </div>
+
+          <form id="paymentForm">
+            <div class="field">
+              <label for="name">Nombre del titular</label>
+              <input id="name" type="text" placeholder="Ej. Juan Pérez" required />
+            </div>
+
+            <div class="field">
+              <label for="card">Número de tarjeta</label>
+              <input id="card" type="text" inputmode="numeric" maxlength="19" placeholder="•••• •••• •••• ••••" required />
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="expiry">Vencimiento</label>
+                <input id="expiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/AA" required />
+              </div>
+
+              <div class="field">
+                <label for="cvv">CVV</label>
+                <input id="cvv" type="password" inputmode="numeric" maxlength="4" placeholder="•••" required />
+              </div>
+            </div>
+
+            <button class="pay-btn" type="submit">Pagar $21,99</button>
+            <div id="errorBox" class="error">Complete correctamente todos los campos para continuar.</div>
+          </form>
+
+          <p class="note">
+            Una vez efectuado el pago le enviaremos el instalador
+          </p>
+        </div>
+      </div>
+
+      <div id="successView" class="success">
+        <div class="check">✓</div>
+        <h2>Pago procesado</h2>
+        <p>
+          Se han debitado <strong>21,99 + impuestos aplicables a su país</strong>.
+        </p>
+        <button class="back-btn" onclick="resetPayment()">Realizar otro pago</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('paymentForm');
+    const card = document.getElementById('card');
+    const expiry = document.getElementById('expiry');
+    const cvv = document.getElementById('cvv');
+    const errorBox = document.getElementById('errorBox');
+    const paymentView = document.getElementById('paymentView');
+    const successView = document.getElementById('successView');
+
+    card.addEventListener('input', function () {
+      let value = this.value.replace(/\D/g, '').slice(0, 16);
+      this.value = value.replace(/(.{4})/g, '$1 ').trim();
+    });
+
+    expiry.addEventListener('input', function () {
+      let value = this.value.replace(/\D/g, '').slice(0, 4);
+      if (value.length >= 3) {
+        value = value.slice(0, 2) + '/' + value.slice(2);
+      }
+      this.value = value;
+    });
+
+    cvv.addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '').slice(0, 4);
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const nameValid = document.getElementById('name').value.trim().length >= 3;
+      const cardValid = card.value.replace(/\s/g, '').length === 16;
+      const expiryValid = /^\d{2}\/\d{2}$/.test(expiry.value);
+      const cvvValid = /^\d{3,4}$/.test(cvv.value);
+
+      if (!nameValid || !cardValid || !expiryValid || !cvvValid) {
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      errorBox.style.display = 'none';
+      paymentView.style.display = 'none';
+      successView.style.display = 'block';
+    });
+
+    function resetPayment() {
+      form.reset();
+      successView.style.display = 'none';
+      paymentView.style.display = 'block';
+      errorBox.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
